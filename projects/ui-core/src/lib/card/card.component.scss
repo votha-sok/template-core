@@ -1,0 +1,56 @@
+:host {
+  display: block;
+  border-radius: var(--cui-radius-lg);
+  transition: box-shadow 150ms ease, transform 150ms ease;
+  overflow: hidden;
+
+  &.cui-card--padded { padding: 20px; }
+
+  &.cui-card--elevated {
+    background: var(--cui-card-bg);
+    box-shadow: var(--cui-shadow-md);
+    border: 1px solid transparent;
+  }
+
+  &.cui-card--outlined {
+    background: var(--cui-card-bg);
+    box-shadow: none;
+    border: 1px solid var(--cui-card-border);
+  }
+
+  &.cui-card--filled {
+    background: var(--mat-sys-surface-container);
+    box-shadow: none;
+    border: 1px solid transparent;
+  }
+
+  &.cui-card--hoverable:hover {
+    box-shadow: var(--cui-shadow-lg);
+    transform: translateY(-1px);
+  }
+
+  &.cui-card--clickable { cursor: pointer; }
+
+  &.cui-card--selected {
+    border-color: var(--mat-sys-primary);
+    box-shadow: 0 0 0 1px var(--mat-sys-primary);
+  }
+}
+
+  &.cui-card--filled {
+    background: var(--mat-sys-surface-variant);
+    box-shadow: none;
+    border: 1px solid transparent;
+  }
+
+  &.cui-card--hoverable:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--cui-shadow-lg);
+  }
+
+  &.cui-card--clickable { cursor: pointer; }
+
+  &.cui-card--selected {
+    border-color: var(--mat-sys-primary);
+    box-shadow: 0 0 0 2px var(--mat-sys-primary);
+  }

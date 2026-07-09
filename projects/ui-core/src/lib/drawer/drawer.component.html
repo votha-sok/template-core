@@ -1,0 +1,36 @@
+@if (open()) {
+  <!-- Backdrop -->
+  <div class="cui-drawer__backdrop"
+    (click)="onBackdropClick()"
+    aria-hidden="true">
+  </div>
+
+  <!-- Panel -->
+  <div class="cui-drawer__panel"
+    [class]="'cui-drawer__panel--' + position()"
+    [style.width]="panelWidth()"
+    [style.height]="panelHeight()"
+    role="dialog"
+    [attr.aria-label]="title()"
+    aria-modal="true">
+
+    <!-- Header -->
+    <div class="cui-drawer__header">
+      <h2 class="cui-drawer__title">{{ title() }}</h2>
+      @if (showClose()) {
+        <button class="cui-drawer__close" (click)="close()" aria-label="Close drawer">
+          <cui-icon name="close" size="sm" color="currentColor" />
+        </button>
+      }
+    </div>
+
+    <!-- Content -->
+    <div class="cui-drawer__body">
+      <ng-content />
+    </div>
+
+    <!-- Footer -->
+    <ng-content select="[cuiDrawerFooter]" />
+
+  </div>
+}

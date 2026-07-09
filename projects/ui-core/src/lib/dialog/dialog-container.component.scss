@@ -1,0 +1,68 @@
+.cui-dialog {
+  display: flex;
+  flex-direction: column;
+  background: var(--cui-card-bg);
+  border-radius: var(--cui-radius-xl);
+  box-shadow: var(--cui-shadow-lg);
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+.cui-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  flex-shrink: 0;
+
+  &--divided {
+    border-bottom: 1px solid var(--cui-card-border);
+    padding-bottom: 16px;
+  }
+}
+
+.cui-dialog__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+  line-height: 1.3;
+}
+
+.cui-dialog__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--cui-radius-md);
+  border: none;
+  background: transparent;
+  color: var(--mat-sys-on-surface-variant);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 120ms;
+
+  &:hover { background: var(--mat-sys-surface-container); }
+  &:focus-visible { outline: 2px solid var(--mat-sys-primary); }
+}
+
+.cui-dialog__body {
+  overflow-y: auto;
+  padding: 16px 24px;
+  flex: 1;
+  color: var(--mat-sys-on-surface);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+// Footer slot — consumer wraps actions in [cuiDialogFooter]
+::ng-deep [cuiDialogFooter] {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--cui-card-border);
+  flex-shrink: 0;
+}

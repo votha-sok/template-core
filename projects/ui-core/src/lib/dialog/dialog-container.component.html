@@ -1,0 +1,21 @@
+<div class="cui-dialog">
+
+  <!-- Header -->
+  <div class="cui-dialog__header" [class.cui-dialog__header--divided]="dividers()">
+    <h2 class="cui-dialog__title">{{ title() }}</h2>
+    @if (showClose()) {
+      <button class="cui-dialog__close" (click)="close()" aria-label="Close dialog">
+        <cui-icon name="close" size="sm" color="currentColor" />
+      </button>
+    }
+  </div>
+
+  <!-- Body -->
+  <div class="cui-dialog__body">
+    <ng-content />
+  </div>
+
+  <!-- Footer -->
+  <ng-content select="[cuiDialogFooter]" />
+
+</div>

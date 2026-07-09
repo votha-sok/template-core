@@ -1,0 +1,26 @@
+<mat-tab-group
+  [selectedIndex]="activeIndex()"
+  [mat-stretch-tabs]="stretchTabs()"
+  [animationDuration]="animationDuration()"
+  (selectedIndexChange)="onTabChange($event)">
+
+  @for (tab of tabs(); track tab.id) {
+    <mat-tab [disabled]="tab.disabled ?? false">
+      <ng-template mat-tab-label>
+        <span class="cui-tab__label">
+          {{ tab.label }}
+          @if (tab.badge !== undefined) {
+            <span class="cui-tab__badge">{{ tab.badge }}</span>
+          }
+        </span>
+      </ng-template>
+      @if (tab.content) {
+        <ng-container [ngTemplateOutlet]="tab.content" />
+      }
+    </mat-tab>
+  }
+
+</mat-tab-group>
+
+<!-- Named slot for declarative tab content when not using TabItem.content -->
+<ng-content />

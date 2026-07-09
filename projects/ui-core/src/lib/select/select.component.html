@@ -1,0 +1,41 @@
+<mat-form-field [appearance]="matAppearance()"
+  [class.cui-select--full]="fullWidth()"
+  class="cui-select">
+
+  @if (label()) {
+    <mat-label>{{ label() }}</mat-label>
+  }
+
+  <mat-select
+    [value]="value()"
+    [multiple]="multiple()"
+    [disabled]="disabled()"
+    [required]="required()"
+    [placeholder]="placeholder()"
+    (valueChange)="onChange($event)"
+    (openedChange)="$event ? null : onTouched()">
+
+    <!-- Ungrouped options -->
+    @for (opt of groupedOptions().ungrouped; track opt.value) {
+      <mat-option [value]="opt.value" [disabled]="opt.disabled ?? false">
+        {{ opt.label }}
+      </mat-option>
+    }
+
+    <!-- Grouped options -->
+    @for (group of groupedOptions().groups; track group[0]) {
+      <mat-optgroup [label]="group[0]">
+        @for (opt of group[1]; track opt.value) {
+          <mat-option [value]="opt.value" [disabled]="opt.disabled ?? false">
+            {{ opt.label }}
+          </mat-option>
+        }
+      </mat-optgroup>
+    }
+
+  </mat-select>
+
+  @if (hint() && !error()) { <mat-hint>{{ hint() }}</mat-hint> }
+  @if (error())             { <mat-error>{{ error() }}</mat-error> }
+
+</mat-form-field>

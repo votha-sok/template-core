@@ -1,0 +1,41 @@
+:host { display: block; }
+
+.cui-breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+}
+
+.cui-breadcrumb__item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.cui-breadcrumb__link {
+  color: var(--mat-sys-on-surface-variant);
+  text-decoration: none;
+  padding: 2px 4px;
+  border-radius: var(--cui-radius-sm);
+  transition: color 120ms, background 120ms;
+
+  &:hover {
+    color: var(--mat-sys-primary);
+    background: color-mix(in srgb, var(--mat-sys-primary) 8%, transparent);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: 1px;
+  }
+}
+
+.cui-breadcrumb__current {
+  color: var(--mat-sys-on-surface);
+  font-weight: 600;
+  padding: 2px 4px;
+}

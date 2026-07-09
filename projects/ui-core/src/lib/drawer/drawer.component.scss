@@ -1,0 +1,92 @@
+:host { display: contents; }
+
+.cui-drawer__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.cui-drawer__panel {
+  position: fixed;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  background: var(--cui-card-bg);
+  box-shadow: var(--cui-shadow-lg);
+  overflow: hidden;
+
+  &--right  {
+    top: 0; right: 0; bottom: 0;
+    border-radius: var(--cui-radius-xl) 0 0 var(--cui-radius-xl);
+    animation: cui-slide-from-right 220ms cubic-bezier(0.4,0,0.2,1);
+  }
+  &--left   {
+    top: 0; left: 0; bottom: 0;
+    border-radius: 0 var(--cui-radius-xl) var(--cui-radius-xl) 0;
+    animation: cui-slide-from-left 220ms cubic-bezier(0.4,0,0.2,1);
+  }
+  &--top    {
+    top: 0; left: 0; right: 0;
+    border-radius: 0 0 var(--cui-radius-xl) var(--cui-radius-xl);
+    animation: cui-slide-from-top 220ms cubic-bezier(0.4,0,0.2,1);
+  }
+  &--bottom {
+    bottom: 0; left: 0; right: 0;
+    border-radius: var(--cui-radius-xl) var(--cui-radius-xl) 0 0;
+    animation: cui-slide-from-bottom 220ms cubic-bezier(0.4,0,0.2,1);
+  }
+}
+
+@keyframes cui-slide-from-right   { from { transform: translateX(100%); } }
+@keyframes cui-slide-from-left    { from { transform: translateX(-100%); } }
+@keyframes cui-slide-from-top     { from { transform: translateY(-100%); } }
+@keyframes cui-slide-from-bottom  { from { transform: translateY(100%); } }
+
+.cui-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--cui-card-border);
+  flex-shrink: 0;
+}
+
+.cui-drawer__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.cui-drawer__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--cui-radius-md);
+  color: var(--mat-sys-on-surface-variant);
+  cursor: pointer;
+  &:hover { background: var(--mat-sys-surface-container); }
+  &:focus-visible { outline: 2px solid var(--mat-sys-primary); }
+}
+
+.cui-drawer__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  color: var(--mat-sys-on-surface);
+}
+
+::ng-deep [cuiDrawerFooter] {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--cui-card-border);
+  flex-shrink: 0;
+}

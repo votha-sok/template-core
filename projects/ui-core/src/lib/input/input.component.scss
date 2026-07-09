@@ -1,0 +1,16 @@
+:host { display: block; }
+
+.cui-input {
+  width: auto;
+
+  &.cui-input--full { width: 100%; }
+
+  &.cui-input--sm {
+    --mat-form-field-container-height: 36px;
+    font-size: 13px;
+  }
+  &.cui-input--lg {
+    --mat-form-field-container-height: 52px;
+    font-size: 16px;
+  }
+}

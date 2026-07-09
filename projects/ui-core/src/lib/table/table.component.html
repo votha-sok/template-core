@@ -1,0 +1,91 @@
+<div class="cui-table__wrapper">
+  <table class="cui-table"
+    [class.cui-table--striped]="striped()"
+    [class.cui-table--hoverable]="hoverable()"
+    role="grid">
+
+    <thead [class.cui-table__head--sticky]="stickyHeader()">
+      <tr>
+        @if (selectable()) {
+          <th class="cui-table__th cui-table__th--check" scope="col">
+            <input type="checkbox" class="cui-table__checkbox"
+              [checked]="allSelected()"
+              [indeterminate]="!allSelected() && _selected().size > 0"
+              (change)="toggleAll()"
+              aria-label="Select all rows" />
+          </th>
+        }
+        @for (col of columns(); track col.key) {
+          <th class="cui-table__th"
+            scope="col"
+            [class.cui-table__th--sortable]="col.sortable"
+            [class.cui-table__th--sticky]="col.sticky"
+            [class.cui-table__th--sorted]="_sort().column === col.key"
+            [style.width]="col.width ?? 'auto'"
+            [style.text-align]="col.align ?? 'left'"
+            (click)="onSort(col)">
+            <span class="cui-table__th-inner">
+              {{ col.header }}
+              @if (col.sortable) {
+                <cui-icon [name]="getSortIcon(col)" size="xs"
+                  color="currentColor" class="cui-table__sort-icon" />
+              }
+            </span>
+          </th>
+        }
+      </tr>
+    </thead>
+
+    <tbody>
+      @if (loading()) {
+        @for (_ of [1,2,3,4,5]; track $index) {
+          <tr class="cui-table__tr">
+            @if (selectable()) {
+              <td class="cui-table__td"><div class="cui-table__skeleton"></div></td>
+            }
+            @for (col of columns(); track col.key) {
+              <td class="cui-table__td">
+                <div class="cui-table__skeleton" [style.width]="col.key === columns()[0]?.key ? '60%' : '80%'"></div>
+              </td>
+            }
+          </tr>
+        }
+      } @else if (rows().length === 0) {
+        <tr>
+          <td class="cui-table__empty"
+            [attr.colspan]="selectable() ? columns().length + 1 : columns().length">
+            No data available
+          </td>
+        </tr>
+      } @else {
+        @for (row of rows(); track trackBy()(row)) {
+          <tr class="cui-table__tr"
+            [class.cui-table__tr--selected]="isSelected(row)"
+            (click)="rowClick.emit(row)">
+            @if (selectable()) {
+              <td class="cui-table__td cui-table__td--check" (click)="$event.stopPropagation()">
+                <input type="checkbox" class="cui-table__checkbox"
+                  [checked]="isSelected(row)"
+                  (change)="toggleRow(row)"
+                  [attr.aria-label]="'Select row'" />
+              </td>
+            }
+            @for (col of columns(); track col.key) {
+              <td class="cui-table__td"
+                [class.cui-table__td--sticky]="col.sticky"
+                [style.text-align]="col.align ?? 'left'">
+                @if (col.cellTemplate) {
+                  <ng-container [ngTemplateOutlet]="col.cellTemplate"
+                    [ngTemplateOutletContext]="{ $implicit: row, value: getValue(row, col) }" />
+                } @else {
+                  {{ getValue(row, col) }}
+                }
+              </td>
+            }
+          </tr>
+        }
+      }
+    </tbody>
+
+  </table>
+</div>

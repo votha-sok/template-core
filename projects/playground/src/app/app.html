@@ -1,0 +1,397 @@
+<cui-toast-outlet />
+
+<!-- Dialog overlay -->
+@if (dialogOpen()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center"
+    style="background:rgba(0,0,0,.45);">
+    <cui-dialog-container
+      title="Confirm Action"
+      (closed)="dialogOpen.set(false)"
+      style="background:var(--cui-card-bg);border-radius:var(--cui-radius-lg);width:440px;max-width:90vw;">
+      <p class="text-sm py-2" style="color:var(--mat-sys-on-surface);">
+        Are you sure you want to close this case? This action cannot be undone.
+      </p>
+      <div cuiDialogFooter class="flex justify-end gap-3 px-6 py-4"
+        style="border-top:1px solid var(--cui-card-border);">
+        <cui-button variant="text"   (cuiClick)="dialogOpen.set(false)">Cancel</cui-button>
+        <cui-button variant="filled" color="error"
+          (cuiClick)="dialogOpen.set(false); toast('success')">
+          Confirm
+        </cui-button>
+      </div>
+    </cui-dialog-container>
+  </div>
+}
+
+<!-- Drawer -->
+<cui-drawer [open]="drawerOpen()" title="Case Details" position="right" size="md"
+  (closed)="drawerOpen.set(false)">
+  <div class="flex flex-col gap-4 p-4">
+    <p class="text-sm" style="color:var(--mat-sys-on-surface-variant);">
+      Case AML-2401 — Suspicious wire transfer
+    </p>
+    <div class="flex flex-col gap-2">
+      @for (field of [['Status','Open'],['Risk','High'],['Assignee','Alice B'],['Created','Jan 15 2024']]; track field[0]) {
+        <div class="flex justify-between text-sm">
+          <span style="color:var(--mat-sys-on-surface-variant)">{{ field[0] }}</span>
+          <span style="color:var(--mat-sys-on-surface);font-weight:500">{{ field[1] }}</span>
+        </div>
+      }
+    </div>
+    <cui-button variant="outlined" iconLeft="edit" (cuiClick)="drawerOpen.set(false)">
+      Edit Case
+    </cui-button>
+  </div>
+</cui-drawer>
+
+<div class="min-h-screen flex flex-col" style="background:var(--mat-sys-background);">
+
+  <!-- Topbar -->
+  <header class="flex items-center justify-between px-6 h-14 shrink-0"
+    style="background:var(--cui-topbar-bg);color:var(--cui-topbar-text);
+           border-bottom:1px solid var(--cui-topbar-border);box-shadow:var(--cui-shadow-sm);">
+    <div class="flex items-center gap-2">
+      <cui-icon name="company-logo" size="sm" [color]="'var(--cui-topbar-text)'" />
+      <span class="font-bold tracking-tight">company-ui</span>
+      <cui-badge color="primary" size="sm" class="ml-2">v{{ frameworkVersion }}</cui-badge>
+    </div>
+    <div class="flex items-center gap-2">
+      @for (t of themeService.availableThemes; track t.name) {
+        <button (click)="themeService.setTheme(t.name)"
+          class="px-2 py-1 text-xs rounded border transition-all"
+          [style.border-color]="themeService.currentThemeName()===t.name?'currentColor':'transparent'"
+          style="background:transparent;color:var(--cui-topbar-text);cursor:pointer;">
+          {{ t.label }}
+        </button>
+      }
+      <cui-avatar name="Alex Morgan" size="sm" status="online"
+        cuiTooltip="Logged in as Alex Morgan" />
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-56 shrink-0 flex flex-col py-3 overflow-y-auto"
+      style="background:var(--cui-sidebar-bg);border-right:1px solid var(--cui-sidebar-border);">
+      @for (item of menuService.resolvedItems(); track item.id) {
+        @if (item.isVisible) {
+          @if (item.dividerBefore) {
+            <hr class="my-2 mx-3" style="border-color:var(--cui-sidebar-border);" />
+          }
+          @if (item.children?.length) {
+            <button (click)="menuService.toggle(item.id)"
+              class="flex items-center gap-2.5 px-4 py-2 w-full text-left text-sm font-medium"
+              style="background:transparent;border:none;cursor:pointer;"
+              [style.color]="item.isActive?'var(--cui-sidebar-active-text)':'var(--cui-sidebar-text)'"
+              [style.background]="item.isActive?'var(--cui-sidebar-active-bg)':'transparent'">
+              <cui-icon [name]="item.icon||'circle'" size="sm" color="currentColor" />
+              <span class="flex-1">{{ item.label }}</span>
+              <cui-icon [name]="item.expanded?'expand_less':'expand_more'" size="xs" color="currentColor" />
+            </button>
+            @if (item.expanded) {
+              @for (child of item.children; track child.id) {
+                <div class="flex items-center gap-2.5 pl-9 pr-4 py-1.5 text-sm cursor-pointer"
+                  [style.color]="$any(child).isExactActive?'var(--cui-sidebar-active-text)':'var(--cui-sidebar-text)'"
+                  [style.background]="$any(child).isExactActive?'var(--cui-sidebar-active-bg)':'transparent'">
+                  <cui-icon [name]="child.icon||'circle'" size="xs" color="currentColor" />
+                  <span class="flex-1">{{ child.label }}</span>
+                  @if (child.badge) {
+                    <cui-badge color="error" size="sm" variant="filled">{{ child.badge }}</cui-badge>
+                  }
+                </div>
+              }
+            }
+          } @else {
+            <div class="flex items-center gap-2.5 px-4 py-2 text-sm font-medium cursor-pointer"
+              [style.background]="item.isExactActive?'var(--cui-sidebar-active-bg)':'transparent'"
+              [style.color]="item.isExactActive?'var(--cui-sidebar-active-text)':'var(--cui-sidebar-text)'">
+              <cui-icon [name]="item.icon||'circle'" size="sm" color="currentColor" />
+              {{ item.label }}
+            </div>
+          }
+        }
+      }
+    </aside>
+
+    <!-- Main content -->
+    <main class="flex-1 overflow-auto p-6 flex flex-col gap-6"
+      style="background:var(--mat-sys-background);">
+
+      <!-- Breadcrumb -->
+      <cui-breadcrumb />
+
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold" style="color:var(--mat-sys-on-background);">
+          AML Case Dashboard
+        </h1>
+        <div class="flex gap-2">
+          <cui-button variant="outlined" iconLeft="shield"
+            (cuiClick)="drawerOpen.set(true)">Details</cui-button>
+          <cui-button variant="filled"   iconLeft="add"
+            (cuiClick)="dialogOpen.set(true)">New Action</cui-button>
+        </div>
+      </div>
+
+      <!-- Tabs wrapping all content sections -->
+      <cui-tabs [tabs]="tabs" [activeIndex]="activeTab()"
+        (tabChange)="activeTab.set($event)">
+
+        <!-- Tab 0: Overview (shown outside tabs for demo since no router) -->
+      </cui-tabs>
+
+      @switch (activeTab()) {
+
+        @case (0) {
+          <!-- Overview: stats + progress + skeleton -->
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            @for (stat of [
+              {label:'Open Cases',  value:'24',  icon:'folder_open', color:'primary'},
+              {label:'High Risk',   value:'8',   icon:'warning',     color:'error'},
+              {label:'In Review',   value:'13',  icon:'hourglass_top',color:'warning'},
+              {label:'Closed Today',value:'5',   icon:'check_circle',color:'success'}
+            ]; track stat.label) {
+              <cui-card variant="elevated" [padding]="true" [hoverable]="true">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-sm" style="color:var(--mat-sys-on-surface-variant)">{{ stat.label }}</p>
+                    <p class="text-3xl font-bold mt-1" style="color:var(--mat-sys-on-surface)">{{ stat.value }}</p>
+                  </div>
+                  <div class="p-3 rounded-xl" style="background:var(--mat-sys-primary-container)">
+                    <cui-icon [name]="stat.icon" size="lg" color="var(--mat-sys-primary)" />
+                  </div>
+                </div>
+              </cui-card>
+            }
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <!-- Progress card -->
+            <cui-card variant="elevated">
+              <div class="p-5">
+                <h3 class="font-semibold mb-4" style="color:var(--mat-sys-on-surface)">Case Resolution Progress</h3>
+                <div class="flex flex-col gap-3">
+                  <div>
+                    <div class="flex justify-between text-sm mb-1">
+                      <span style="color:var(--mat-sys-on-surface-variant)">High Risk</span>
+                      <span style="color:var(--mat-sys-on-surface)">{{ progress() }}%</span>
+                    </div>
+                    <cui-progress [value]="progress()" color="error" height="8px" />
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-sm mb-1">
+                      <span style="color:var(--mat-sys-on-surface-variant)">Medium Risk</span>
+                      <span style="color:var(--mat-sys-on-surface)">54%</span>
+                    </div>
+                    <cui-progress [value]="54" color="warning" height="8px" />
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-sm mb-1">
+                      <span style="color:var(--mat-sys-on-surface-variant)">Low Risk</span>
+                      <span style="color:var(--mat-sys-on-surface)">89%</span>
+                    </div>
+                    <cui-progress [value]="89" color="success" height="8px" />
+                  </div>
+                </div>
+                <div class="flex gap-2 mt-4">
+                  <cui-button size="sm" variant="outlined" (cuiClick)="progress.update(v=>Math.max(0,v-10))">-10</cui-button>
+                  <cui-button size="sm" variant="outlined" (cuiClick)="progress.update(v=>Math.min(100,v+10))">+10</cui-button>
+                </div>
+              </div>
+            </cui-card>
+
+            <!-- Skeleton loading card -->
+            <cui-card variant="elevated">
+              <div class="p-5">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="font-semibold" style="color:var(--mat-sys-on-surface)">Loading State Preview</h3>
+                  <cui-button size="sm" variant="tonal" (cuiClick)="simulateLoad()">Simulate Load</cui-button>
+                </div>
+                <div class="relative" style="min-height:120px;">
+                  @if (!cardLoading()) {
+                    <div class="flex flex-col gap-3">
+                      @for (i of [1,2,3]; track i) {
+                        <div class="flex gap-3 items-center">
+                          <cui-avatar [name]="'User ' + i" size="sm" />
+                          <div class="flex-1 flex flex-col gap-1">
+                            <span class="text-sm font-medium" style="color:var(--mat-sys-on-surface)">AML Case #240{{ i }}</span>
+                            <span class="text-xs" style="color:var(--mat-sys-on-surface-variant)">High priority · Assigned</span>
+                          </div>
+                          <cui-badge [color]="i===1?'error':i===2?'warning':'success'" size="sm">
+                            {{ i===1?'Open':i===2?'Review':'Closed' }}
+                          </cui-badge>
+                        </div>
+                      }
+                    </div>
+                  } @else {
+                    <div class="flex flex-col gap-3">
+                      @for (i of [1,2,3]; track i) {
+                        <div class="flex gap-3 items-center">
+                          <cui-skeleton variant="circle" width="32px" height="32px" />
+                          <div class="flex-1 flex flex-col gap-1">
+                            <cui-skeleton variant="text" width="50%" />
+                            <cui-skeleton variant="text" width="30%" />
+                          </div>
+                          <cui-skeleton variant="rect" width="60px" height="22px" />
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            </cui-card>
+          </div>
+        }
+
+        @case (1) {
+          <!-- Forms tab -->
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <cui-card variant="elevated">
+              <div class="p-5 flex flex-col gap-4">
+                <h3 class="font-semibold" style="color:var(--mat-sys-on-surface)">Case Form</h3>
+                <form [formGroup]="form" (ngSubmit)="submitForm()" class="flex flex-col gap-4">
+                  <cui-input label="Subject / Description" formControlName="name"
+                    placeholder="Describe the suspicious activity…"
+                    prefixIcon="edit_note" [required]="true"
+                    [error]="form.controls.name.invalid && form.controls.name.touched ? 'Subject is required' : null" />
+
+                  <cui-input label="Investigator Email" type="email" formControlName="email"
+                    placeholder="investigator@bank.com"
+                    prefixIcon="mail" [required]="true"
+                    [error]="form.controls.email.invalid && form.controls.email.touched ? 'Valid email required' : null" />
+
+                  <cui-select label="Risk Level" formControlName="risk"
+                    [options]="riskOptions" placeholder="Select risk level…" />
+
+                  <cui-datepicker label="Incident Date" formControlName="date"
+                    hint="Date the suspicious activity was observed" />
+
+                  <div class="flex gap-3">
+                    <cui-button type="submit" variant="filled" iconLeft="save">
+                      Submit Case
+                    </cui-button>
+                    <cui-button type="button" variant="text"
+                      (cuiClick)="form.reset()">
+                      Reset
+                    </cui-button>
+                  </div>
+                </form>
+              </div>
+            </cui-card>
+
+            <div class="flex flex-col gap-4">
+              <!-- Chip demo -->
+              <cui-card variant="outlined">
+                <div class="p-4">
+                  <h3 class="font-semibold mb-3" style="color:var(--mat-sys-on-surface)">Tags & Status Chips</h3>
+                  <div class="flex flex-wrap gap-2">
+                    <cui-chip color="error"   icon="warning"       variant="soft">High Risk</cui-chip>
+                    <cui-chip color="warning" icon="hourglass_top" variant="soft">Under Review</cui-chip>
+                    <cui-chip color="success" icon="check"         variant="soft">Verified</cui-chip>
+                    <cui-chip color="primary" icon="shield"        [dismissible]="true">AML</cui-chip>
+                    <cui-chip color="primary" icon="aml-flag"      [dismissible]="true">KYC</cui-chip>
+                    <cui-chip color="neutral" [selectable]="true"  [selected]="true">Selected</cui-chip>
+                  </div>
+                </div>
+              </cui-card>
+
+              <!-- Toast demo -->
+              <cui-card variant="outlined">
+                <div class="p-4">
+                  <h3 class="font-semibold mb-3" style="color:var(--mat-sys-on-surface)">Notifications</h3>
+                  <div class="flex flex-wrap gap-2">
+                    <cui-button size="sm" variant="tonal" color="primary"   (cuiClick)="toast('success')">Success</cui-button>
+                    <cui-button size="sm" variant="tonal" color="error"     (cuiClick)="toast('error')">Error</cui-button>
+                    <cui-button size="sm" variant="tonal" color="secondary" (cuiClick)="toast('warning')">Warning</cui-button>
+                    <cui-button size="sm" variant="tonal" color="tertiary"  (cuiClick)="toast('info')">Info</cui-button>
+                  </div>
+                </div>
+              </cui-card>
+
+              <!-- Empty state -->
+              <cui-card variant="outlined">
+                <cui-empty-state icon="search_off"
+                  title="No matching cases"
+                  description="Adjust your filters to find the cases you're looking for.">
+                  <cui-button cuiEmptyAction size="sm" variant="outlined" iconLeft="tune">
+                    Adjust Filters
+                  </cui-button>
+                </cui-empty-state>
+              </cui-card>
+            </div>
+          </div>
+        }
+
+        @case (2) {
+          <!-- Data tab -->
+          <cui-data-table
+            [columns]="columns"
+            [rows]="tableRows()"
+            [total]="tableTotal()"
+            [selectable]="true"
+            [striped]="true"
+            [searchable]="true"
+            searchPlaceholder="Search cases…"
+            (stateChange)="onTableChange($event)"
+            (rowClick)="drawerOpen.set(true)">
+          </cui-data-table>
+        }
+
+        @case (3) {
+          <!-- Overlays tab -->
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <cui-card variant="elevated">
+              <div class="p-5">
+                <h3 class="font-semibold mb-3" style="color:var(--mat-sys-on-surface)">Dialog</h3>
+                <p class="text-sm mb-4" style="color:var(--mat-sys-on-surface-variant)">
+                  Full CDK dialog with typed result, header/body/footer slots.
+                </p>
+                <cui-button variant="filled" iconLeft="open_in_new"
+                  (cuiClick)="dialogOpen.set(true)">Open Dialog</cui-button>
+              </div>
+            </cui-card>
+
+            <cui-card variant="elevated">
+              <div class="p-5">
+                <h3 class="font-semibold mb-3" style="color:var(--mat-sys-on-surface)">Drawer</h3>
+                <p class="text-sm mb-4" style="color:var(--mat-sys-on-surface-variant)">
+                  Side panel with header, scrollable body, optional footer slot.
+                </p>
+                <cui-button variant="outlined" iconLeft="side_navigation"
+                  (cuiClick)="drawerOpen.set(true)">Open Drawer</cui-button>
+              </div>
+            </cui-card>
+
+            <cui-card variant="elevated">
+              <div class="p-5 relative" style="min-height:140px;">
+                <h3 class="font-semibold mb-3" style="color:var(--mat-sys-on-surface)">Loading Overlay</h3>
+                <p class="text-sm mb-3" style="color:var(--mat-sys-on-surface-variant)">
+                  Positioned overlay with backdrop blur over a scoped container.
+                </p>
+                <cui-button size="sm" variant="tonal" (cuiClick)="simulateLoad()">
+                  Trigger 2s Overlay
+                </cui-button>
+                <cui-loading-overlay [show]="cardLoading()" label="Loading case data…" />
+              </div>
+            </cui-card>
+
+            <cui-card variant="elevated">
+              <div class="p-5">
+                <h3 class="font-semibold mb-3" style="color:var(--mat-sys-on-surface)">Pagination</h3>
+                <cui-pagination
+                  [page]="tablePage()"
+                  [pageSize]="10"
+                  [total]="247"
+                  (pageChange)="onPageChange($event)" />
+              </div>
+            </cui-card>
+          </div>
+        }
+
+      }
+
+    </main>
+  </div>
+</div>
+
+<router-outlet />

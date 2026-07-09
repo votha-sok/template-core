@@ -1,0 +1,80 @@
+<div class="cui-pagination">
+  <!-- Info -->
+  @if (!compact()) {
+    <span class="cui-pagination__info">
+      @if (total() > 0) {
+        {{ startItem() }}–{{ endItem() }} of {{ total() }}
+      } @else {
+        No results
+      }
+    </span>
+  }
+
+  <!-- Page size -->
+  @if (showPageSizeSelector() && !compact()) {
+    <div class="cui-pagination__size">
+      <label class="cui-pagination__size-label">Rows</label>
+      <select class="cui-pagination__size-select"
+        [value]="pageSize()"
+        (change)="onPageSizeChange($event)"
+        aria-label="Rows per page">
+        @for (s of pageSizes(); track s) {
+          <option [value]="s" [selected]="s === pageSize()">{{ s }}</option>
+        }
+      </select>
+    </div>
+  }
+
+  <!-- Controls -->
+  <div class="cui-pagination__controls" role="group" aria-label="Page navigation">
+    @if (showFirstLast()) {
+      <button class="cui-pagination__btn"
+        [disabled]="page() === 1"
+        (click)="first()"
+        aria-label="First page">
+        <cui-icon name="first_page" size="sm" color="currentColor" />
+      </button>
+    }
+
+    <button class="cui-pagination__btn"
+      [disabled]="page() === 1"
+      (click)="prev()"
+      aria-label="Previous page">
+      <cui-icon name="chevron_left" size="sm" color="currentColor" />
+    </button>
+
+    @if (!compact()) {
+      @for (p of pageNumbers(); track $index) {
+        @if (p === '...') {
+          <span class="cui-pagination__ellipsis">…</span>
+        } @else {
+          <button class="cui-pagination__btn cui-pagination__page"
+            [class.cui-pagination__page--active]="p === page()"
+            [attr.aria-current]="p === page() ? 'page' : null"
+            [attr.aria-label]="'Page ' + p"
+            (click)="goTo(p)">
+            {{ p }}
+          </button>
+        }
+      }
+    } @else {
+      <span class="cui-pagination__info">{{ page() }} / {{ totalPages() }}</span>
+    }
+
+    <button class="cui-pagination__btn"
+      [disabled]="page() === totalPages()"
+      (click)="next()"
+      aria-label="Next page">
+      <cui-icon name="chevron_right" size="sm" color="currentColor" />
+    </button>
+
+    @if (showFirstLast()) {
+      <button class="cui-pagination__btn"
+        [disabled]="page() === totalPages()"
+        (click)="last()"
+        aria-label="Last page">
+        <cui-icon name="last_page" size="sm" color="currentColor" />
+      </button>
+    }
+  </div>
+</div>

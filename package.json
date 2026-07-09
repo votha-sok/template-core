@@ -1,0 +1,44 @@
+{
+  "name": "company-ui",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "build:libs": "ng build ui-utils && ng build ui-icons && ng build ui-theme && ng build ui-core && ng build ui-layout",
+    "watch:base": "concurrently \"ng build ui-utils --watch\" \"ng build ui-icons --watch\" \"ng build ui-theme --watch\"",
+    "watch:core": "wait-on dist/ui-utils/package.json dist/ui-icons/package.json dist/ui-theme/package.json && ng build ui-core --watch",
+    "watch:layout": "wait-on dist/ui-core/package.json && ng build ui-layout --watch",
+    "dev:libs": "concurrently \"npm run watch:base\" \"npm run watch:core\" \"npm run watch:layout\"",
+    "dev": "npm run build:libs && concurrently \"npm run dev:libs\" \"ng serve playground\"",
+    "build": "ng build",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "22.0.4",
+    "@angular/cdk": "22.0.4",
+    "@angular/common": "22.0.4",
+    "@angular/compiler": "22.0.4",
+    "@angular/core": "22.0.4",
+    "@angular/forms": "22.0.4",
+    "@angular/material": "22.0.4",
+    "@angular/platform-browser": "22.0.4",
+    "@angular/router": "22.0.4",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "22.0.4",
+    "@angular/cli": "22.0.4",
+    "@angular/compiler-cli": "22.0.4",
+    "@tailwindcss/postcss": "^4.0.0",
+    "concurrently": "^9.1.2",
+    "jsdom": "^28.0.0",
+    "ng-packagr": "22.0.1",
+    "postcss": "^8.5.0",
+    "prettier": "^3.8.1",
+    "tailwindcss": "^4.0.0",
+    "typescript": "~6.0.2",
+    "vitest": "^4.0.8",
+    "wait-on": "^8.0.3"
+  }
+}

@@ -1,0 +1,38 @@
+<div class="cui-data-table">
+
+  <!-- Toolbar -->
+  @if (searchable()) {
+    <div class="cui-data-table__toolbar">
+      <cui-input
+        [placeholder]="searchPlaceholder()"
+        prefixIcon="search"
+        size="sm"
+        [fullWidth]="false"
+        (cuiChange)="onSearch($event)" />
+      <ng-content select="[cuiDataTableActions]" />
+    </div>
+  }
+
+  <!-- Table -->
+  <cui-table
+    [columns]="columns()"
+    [rows]="rows()"
+    [loading]="loading()"
+    [selectable]="selectable()"
+    [striped]="striped()"
+    [trackBy]="trackBy()"
+    (sortChange)="onSortChange($event)"
+    (selectionChange)="selectionChange.emit($event)"
+    (rowClick)="rowClick.emit($event)" />
+
+  <!-- Pagination -->
+  <div class="cui-data-table__footer">
+    <cui-pagination
+      [page]="_page()"
+      [pageSize]="_pageSize()"
+      [total]="total()"
+      [pageSizes]="pageSizes()"
+      (pageChange)="onPageChange($event)" />
+  </div>
+
+</div>
